@@ -1,3 +1,7 @@
 FROM apache/airflow:2.9.1
-COPY requirements.txt /
-RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r /requirements.txt
+
+# instala as dependências como o próprio usuário airflow
+# usando o caminho completo para evitar o bloqueio de segurança
+USER airflow
+
+RUN /home/airflow/.local/bin/pip install minio pandas pyarrow

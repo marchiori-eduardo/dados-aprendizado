@@ -1,5 +1,4 @@
 services:
-
   minio:
     image: minio/minio
     ports:
@@ -22,7 +21,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   airflow-init:
-    image: apache/airflow:2.9.1
+    build: .
     depends_on:
       - postgres
     environment:
@@ -47,7 +46,7 @@ services:
     command: webserver
 
   airflow-scheduler:
-    image: apache/airflow:2.9.1
+    build: .
     depends_on:
       - airflow-init
       - postgres
