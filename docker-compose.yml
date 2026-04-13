@@ -32,7 +32,7 @@ services:
     restart: "no"
 
   airflow-webserver:
-    image: apache/airflow:2.9.1
+    build: .
     depends_on:
       - airflow-init
       - postgres
