@@ -1,6 +1,7 @@
 import duckdb
 from minio import Minio
 import os
+from datetime import datetime
 
 # conecta no MinIO e baixa o parquet da camada silver
 cliente = Minio(
@@ -13,11 +14,16 @@ cliente = Minio(
 # cria pasta local temporária para o arquivo
 os.makedirs("tmp", exist_ok=True)
 
+# usa a data de hoje para encontrar o arquivo mais recente
+data_hoje = datetime.now().strftime("%Y-%m-%d")
+object_name = f"ibge/{data_hoje}/municipios_pr.parquet"
+file_path = "tmp/municipios_pr.parquet"
+
 # baixa o parquet do MinIO para uma pasta local temporária
 cliente.fget_object(
     bucket_name="silver",
-    object_name="ibge/municipios_pr.parquet",
-    file_path="tmp/municipios_pr.parquet"
+    object_name=object_name,
+    file_path=file_path
 )
 print("Arquivo baixado com sucesso")
 

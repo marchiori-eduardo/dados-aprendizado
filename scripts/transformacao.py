@@ -2,6 +2,7 @@ import pandas as pd
 from minio import Minio
 from io import BytesIO
 import json
+from datetime import datetime
 
 cliente_minio = Minio(
     "localhost:9000",
@@ -39,17 +40,20 @@ print(f"\nLinhas duplicadas: {duplicatas}")
 print(f"\nShape final: {df_limpo.shape}")
 print(df_limpo.head())
 
-# salva em Parquet no bucket silver
+# salva em Parquet no bucket silver (particionado por data para idempotência)
 buffer = BytesIO()
 df_limpo.to_parquet(buffer, index=False)
 buffer.seek(0)
 
+data_hoje = datetime.now().strftime("%Y-%m-%d")
+object_name = f"ibge/{data_hoje}/municipios_pr.parquet"
+
 cliente_minio.put_object(
     bucket_name="silver",
-    object_name="ibge/municipios_pr.parquet",
+    object_name=object_name,
     data=buffer,
     length=buffer.getbuffer().nbytes,
     content_type="application/octet-stream"
 )
 
-print("\nArquivo salvo em silver/ibge/municipios_pr.parquet")
+print(f"\nArquivo salvo em silver/{object_name}")

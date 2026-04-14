@@ -3,3 +3,8 @@
 tmp/
 __pycache__/
 *.pyc
+minio_data/
+postgres_data/
+.DS_Store
+Thumbs.db
+.continue
